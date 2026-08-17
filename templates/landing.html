@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Immunisation Data</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+<body>
+
+    <h1>Investigating Preventable Infectious Diseases</h1>
+
+    <p>
+        Welcome to our immunisation data exploration website.
+    </p>
+
+    <h2>Database Connection Test</h2>
+
+    <p>
+        Database connected successfully.
+    </p>
+
+    <h3>Tables in the database:</h3>
+
+    <ul>
+        {% for table in tables %}
+            <li>{{ table["name"] }}</li>
+        {% endfor %}
+    </ul>
+
+    <nav>
+        <a href="/vaccination">Vaccination Explorer</a>
+        <a href="/improvement">Vaccination Improvement</a>
+    </nav>
+
+</body>
+</html>
