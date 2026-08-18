@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Immunisation Data</title>
+
+    <title>Global Immunisation Explorer</title>
 
     <link
         rel="stylesheet"
@@ -13,30 +15,193 @@
 
 <body>
 
-    <h1>Investigating Preventable Infectious Diseases</h1>
+    <header class="hero">
 
-    <p>
-        Welcome to our immunisation data exploration website.
-    </p>
+        <div class="hero-content">
 
-    <h2>Database Connection Test</h2>
+            <p class="eyebrow">
+                COSC3106 · IMMUNISATION DATA
+            </p>
 
-    <p>
-        Database connected successfully.
-    </p>
+            <h1>
+                Investigating Preventable
+                <span>Infectious Diseases</span>
+            </h1>
 
-    <h3>Tables in the database:</h3>
+            <p class="hero-description">
+                Explore global immunisation data and discover
+                how vaccination coverage changes across countries,
+                regions and time.
+            </p>
 
-    <ul>
-        {% for table in tables %}
-            <li>{{ table["name"] }}</li>
-        {% endfor %}
-    </ul>
+            <div class="hero-buttons">
 
-    <nav>
-        <a href="/vaccination">Vaccination Explorer</a>
-        <a href="/improvement">Vaccination Improvement</a>
-    </nav>
+                <a href="/vaccination" class="button primary">
+                    Explore Vaccination Data
+                </a>
+
+                <a href="/improvement" class="button secondary">
+                    Find Biggest Improvements
+                </a>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <main>
+
+        <section class="facts-section">
+
+            <div class="section-heading">
+
+                <p class="eyebrow">
+                    DATABASE SNAPSHOT
+                </p>
+
+                <h2>
+                    The data at a glance
+                </h2>
+
+                <p>
+                    A snapshot of the immunisation data available
+                    in our database.
+                </p>
+
+            </div>
+
+
+            <div class="facts-grid">
+
+                <article class="fact-card">
+
+                    <div class="fact-number">
+                        {{ country_count }}
+                    </div>
+
+                    <h3>Countries</h3>
+
+                    <p>
+                        Countries represented in the
+                        immunisation database.
+                    </p>
+
+                </article>
+
+
+                <article class="fact-card">
+
+                    <div class="fact-number">
+                        {{ antigen_count }}
+                    </div>
+
+                    <h3>Vaccine Types</h3>
+
+                    <p>
+                        Antigen types available
+                        for analysis.
+                    </p>
+
+                </article>
+
+
+                <article class="fact-card">
+
+                    <div class="fact-number">
+                        {{ "{:,}".format(vaccination_count) }}
+                    </div>
+
+                    <h3>Vaccination Records</h3>
+
+                    <p>
+                        Vaccination records available
+                        in the database.
+                    </p>
+
+                </article>
+
+
+                <article class="fact-card">
+
+                    <div class="fact-number">
+                        {{ first_year }}–{{ last_year }}
+                    </div>
+
+                    <h3>Data Period</h3>
+
+                    <p>
+                        Years covered by the
+                        vaccination dataset.
+                    </p>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <section class="explore-section">
+
+            <div>
+
+                <p class="eyebrow">
+                    EXPLORE THE DATA
+                </p>
+
+                <h2>
+                    Go beyond the overview.
+                </h2>
+
+                <p>
+                    Compare vaccination coverage across
+                    countries and regions, or discover which
+                    countries experienced the greatest
+                    improvements over time.
+                </p>
+
+            </div>
+
+            <div class="explore-links">
+
+                <a href="/vaccination" class="explore-card">
+
+                    <span>01</span>
+
+                    <div>
+                        <h3>Vaccination Explorer</h3>
+
+                        <p>
+                            Explore vaccination rates by
+                            country, region, antigen and year.
+                        </p>
+                    </div>
+
+                </a>
+
+
+                <a href="/improvement" class="explore-card">
+
+                    <span>02</span>
+
+                    <div>
+                        <h3>Vaccination Improvement</h3>
+
+                        <p>
+                            Discover countries with the
+                            biggest improvement in vaccination rates.
+                        </p>
+                    </div>
+
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
 
 </body>
 </html>

@@ -16,18 +16,41 @@ def get_db_connection():
 def landing():
     conn = get_db_connection()
 
-    tables = conn.execute("""
-        SELECT name
-        FROM sqlite_master
-        WHERE type = 'table'
-        ORDER BY name
-    """).fetchall()
+    # Fact 1: number of countries
+    country_count = conn.execute("""
+        SELECT COUNT(*) AS total
+        FROM Country
+    """).fetchone()["total"]
+
+    # Fact 2: number of antigen types
+    antigen_count = conn.execute("""
+        SELECT COUNT(*) AS total
+        FROM Antigen
+    """).fetchone()["total"]
+
+    # Fact 3: number of vaccination records
+    vaccination_count = conn.execute("""
+        SELECT COUNT(*) AS total
+        FROM Vaccination
+    """).fetchone()["total"]
+
+    # Fact 4: data timeframe
+    years = conn.execute("""
+        SELECT
+            MIN(year) AS first_year,
+            MAX(year) AS last_year
+        FROM Vaccination
+    """).fetchone()
 
     conn.close()
 
     return render_template(
         "landing.html",
-        tables=tables
+        country_count=country_count,
+        antigen_count=antigen_count,
+        vaccination_count=vaccination_count,
+        first_year=years["first_year"],
+        last_year=years["last_year"]
     )
 
 
@@ -42,4 +65,4 @@ def improvement():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port = 5001)
