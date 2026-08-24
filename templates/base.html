@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#eef4ff">
+    <title>{% block title %}Global Immunisation Explorer{% endblock %}</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <div class="ambient ambient-one" aria-hidden="true"></div>
+    <div class="ambient ambient-two" aria-hidden="true"></div>
+    <div class="ambient ambient-three" aria-hidden="true"></div>
+
+    <header class="site-header">
+        <nav class="glass-nav" aria-label="Primary navigation">
+
+            <a class="brand" href="{{ url_for('landing') }}" aria-label="Global Immunisation Explorer home">
+                <span class="brand-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm6.92 6h-3.05a15.7 15.7 0 0 0-1.25-3.1A8.07 8.07 0 0 1 18.92 8ZM12 4c.86 1.05 1.58 2.41 2.04 4H9.96C10.42 6.41 11.14 5.05 12 4ZM4.26 14a8.33 8.33 0 0 1 0-4h3.42a16.45 16.45 0 0 0 0 4H4.26Zm.82 2h3.05c.27 1.12.69 2.17 1.25 3.1A8.07 8.07 0 0 1 5.08 16ZM8.13 8H5.08a8.07 8.07 0 0 1 4.3-3.1A15.7 15.7 0 0 0 8.13 8ZM12 20c-.86-1.05-1.58-2.41-2.04-4h4.08c-.46 1.59-1.18 2.95-2.04 4Zm2.45-6h-4.9a14.16 14.16 0 0 1 0-4h4.9a14.16 14.16 0 0 1 0 4Zm.17 5.1c.56-.93.98-1.98 1.25-3.1h3.05a8.07 8.07 0 0 1-4.3 3.1ZM16.32 14a16.45 16.45 0 0 0 0-4h3.42a8.33 8.33 0 0 1 0 4h-3.42Z"/>
+                    </svg>
+                </span>
+
+                <span class="brand-copy">
+                    <strong>Immunisation</strong>
+                    <span>Global Explorer</span>
+                </span>
+            </a>
+
+            <div class="nav-links">
+                <a class="nav-link {% if request.endpoint == 'landing' %}is-active{% endif %}"
+                   href="{{ url_for('landing') }}">
+                    Overview
+                </a>
+
+                <a class="nav-link {% if request.endpoint == 'vaccination' %}is-active{% endif %}"
+                   href="{{ url_for('vaccination') }}">
+                    Vaccination Explorer
+                </a>
+
+                <a class="nav-link {% if request.endpoint == 'improvement' %}is-active{% endif %}"
+                   href="{{ url_for('improvement') }}">
+                    Improvement
+                </a>
+            </div>
+
+            <div class="nav-status" aria-label="Dataset status">
+                <span class="status-dot"></span>
+                Dataset ready
+            </div>
+
+        </nav>
+    </header>
+
+    {% block content %}{% endblock %}
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div>
+                <strong>Global Immunisation Explorer</strong>
+                <p>Interactive exploration of worldwide immunisation data.</p>
+            </div>
+
+            <div class="footer-meta">
+                <span>SQLite</span>
+                <span>Flask</span>
+                <span>SQL analytics</span>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

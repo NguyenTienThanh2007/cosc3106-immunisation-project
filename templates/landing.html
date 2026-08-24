@@ -1,207 +1,319 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block title %}Global Immunisation Explorer{% endblock %}
 
-    <title>Global Immunisation Explorer</title>
+{% block content %}
 
-    <link
-        rel="stylesheet"
-        href="{{ url_for('static', filename='css/style.css') }}"
-    >
-</head>
+<main class="page landing-page">
 
-<body>
+    <section class="hero-shell">
 
-    <header class="hero">
+        <div class="hero-copy">
 
-        <div class="hero-content">
-
-            <p class="eyebrow">
-                COSC3106 · IMMUNISATION DATA
-            </p>
+            <div class="eyebrow">
+                <span class="eyebrow-dot"></span>
+                GLOBAL IMMUNISATION DATA
+            </div>
 
             <h1>
                 Investigating Preventable
-                <span>Infectious Diseases</span>
+                <span class="gradient-word">Infectious Diseases</span>
             </h1>
 
-            <p class="hero-description">
-                Explore global immunisation data and discover
-                how vaccination coverage changes across countries,
-                regions and time.
+            <p class="hero-lead">
+                Explore worldwide immunisation data, compare vaccination coverage
+                across countries and regions, and discover how vaccination rates
+                change over time.
             </p>
 
-            <div class="hero-buttons">
+            <div class="hero-actions">
+                <a class="action-button action-primary"
+                   href="{{ url_for('vaccination') }}">
 
-                <a href="/vaccination" class="button primary">
-                    Explore Vaccination Data
+                    <span class="action-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M4 5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5Zm4 12v-4H6v4h2Zm5 0V8h-2v9h2Zm5 0v-7h-2v7h2Z"/>
+                        </svg>
+                    </span>
+
+                    <span>
+                        <strong>Explore Vaccination Data</strong>
+                        <small>Filter by antigen, year, country and region</small>
+                    </span>
+
+                    <span class="action-arrow">→</span>
                 </a>
 
-                <a href="/improvement" class="button secondary">
-                    Find Biggest Improvements
-                </a>
+                <a class="action-button action-secondary"
+                   href="{{ url_for('improvement') }}">
 
+                    <span class="action-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M4 19h16v2H4v-2Zm1-3.4 4.3-4.3 3 3L18.6 8H15V6h7v7h-2V9.4l-7.7 7.7-3-3L6.4 17 5 15.6Z"/>
+                        </svg>
+                    </span>
+
+                    <span>
+                        <strong>Find Biggest Improvements</strong>
+                        <small>Compare population-based vaccination rates</small>
+                    </span>
+
+                    <span class="action-arrow">→</span>
+                </a>
+            </div>
+
+            <div class="hero-trust-row">
+                <span><i></i> Country & regional analysis</span>
+                <span><i></i> Multi-year comparisons</span>
+                <span><i></i> Data-quality aware</span>
             </div>
 
         </div>
 
-    </header>
 
+        <div class="hero-visual" aria-label="Interactive data preview">
 
-    <main>
+            <div class="visual-orbit orbit-one"></div>
+            <div class="visual-orbit orbit-two"></div>
 
-        <section class="facts-section">
+            <div class="preview-card">
 
-            <div class="section-heading">
+                <div class="preview-header">
+                    <div>
+                        <span class="preview-kicker">LIVE DATASET</span>
+                        <h2>Explore the world</h2>
+                    </div>
 
-                <p class="eyebrow">
-                    DATABASE SNAPSHOT
-                </p>
+                    <span class="preview-live">
+                        <i></i> Ready
+                    </span>
+                </div>
 
-                <h2>
-                    The data at a glance
-                </h2>
+                <div class="mini-map" aria-hidden="true">
+                    <div class="map-grid"></div>
 
-                <p>
-                    A snapshot of the immunisation data available
-                    in our database.
-                </p>
+                    <span class="map-point point-1"></span>
+                    <span class="map-point point-2"></span>
+                    <span class="map-point point-3"></span>
+                    <span class="map-point point-4"></span>
+                    <span class="map-point point-5"></span>
+
+                    <div class="map-label label-1">Country</div>
+                    <div class="map-label label-2">Region</div>
+                    <div class="map-label label-3">Year</div>
+                    <div class="map-label label-4">Antigen</div>
+                </div>
+
+                <div class="preview-metrics">
+
+                    <div class="preview-metric">
+                        <span>Timeframe</span>
+                        <strong>{{ first_year }}–{{ last_year }}</strong>
+                    </div>
+
+                    <div class="preview-metric">
+                        <span>Countries</span>
+                        <strong>{{ "{:,}".format(country_count) }}</strong>
+                    </div>
+
+                    <div class="preview-metric">
+                        <span>Antigens</span>
+                        <strong>{{ "{:,}".format(antigen_count) }}</strong>
+                    </div>
+
+                </div>
 
             </div>
 
-
-            <div class="facts-grid">
-
-                <article class="fact-card">
-
-                    <div class="fact-number">
-                        {{ country_count }}
-                    </div>
-
-                    <h3>Countries</h3>
-
-                    <p>
-                        Countries represented in the
-                        immunisation database.
-                    </p>
-
-                </article>
-
-
-                <article class="fact-card">
-
-                    <div class="fact-number">
-                        {{ antigen_count }}
-                    </div>
-
-                    <h3>Vaccine Types</h3>
-
-                    <p>
-                        Antigen types available
-                        for analysis.
-                    </p>
-
-                </article>
-
-
-                <article class="fact-card">
-
-                    <div class="fact-number">
-                        {{ "{:,}".format(vaccination_count) }}
-                    </div>
-
-                    <h3>Vaccination Records</h3>
-
-                    <p>
-                        Vaccination records available
-                        in the database.
-                    </p>
-
-                </article>
-
-
-                <article class="fact-card">
-
-                    <div class="fact-number">
-                        {{ first_year }}–{{ last_year }}
-                    </div>
-
-                    <h3>Data Period</h3>
-
-                    <p>
-                        Years covered by the
-                        vaccination dataset.
-                    </p>
-
-                </article>
-
+            <div class="floating-chip chip-top">
+                <span class="chip-icon">↗</span>
+                Deep-dive analytics
             </div>
 
-        </section>
+            <div class="floating-chip chip-bottom">
+                <span class="chip-icon">✓</span>
+                Dynamic SQL filters
+            </div>
+
+        </div>
+
+    </section>
 
 
-        <section class="explore-section">
+    <section class="snapshot-section">
+
+        <div class="section-heading-row">
 
             <div>
+                <div class="eyebrow">
+                    <span class="eyebrow-dot"></span>
+                    DATABASE SNAPSHOT
+                </div>
 
-                <p class="eyebrow">
-                    EXPLORE THE DATA
-                </p>
-
-                <h2>
-                    Go beyond the overview.
-                </h2>
+                <h2>The data at a glance</h2>
 
                 <p>
-                    Compare vaccination coverage across
-                    countries and regions, or discover which
-                    countries experienced the greatest
-                    improvements over time.
+                    A high-level snapshot of the immunisation data available
+                    for exploration in this application.
                 </p>
-
             </div>
 
-            <div class="explore-links">
-
-                <a href="/vaccination" class="explore-card">
-
-                    <span>01</span>
-
-                    <div>
-                        <h3>Vaccination Explorer</h3>
-
-                        <p>
-                            Explore vaccination rates by
-                            country, region, antigen and year.
-                        </p>
-                    </div>
-
-                </a>
-
-
-                <a href="/improvement" class="explore-card">
-
-                    <span>02</span>
-
-                    <div>
-                        <h3>Vaccination Improvement</h3>
-
-                        <p>
-                            Discover countries with the
-                            biggest improvement in vaccination rates.
-                        </p>
-                    </div>
-
-                </a>
-
+            <div class="section-badge">
+                <span class="section-badge-icon">◎</span>
+                {{ first_year }} → {{ last_year }}
             </div>
 
-        </section>
+        </div>
 
-    </main>
 
-</body>
-</html>
+        <div class="stats-grid">
+
+            <article class="stat-card stat-blue">
+                <div class="stat-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm6 9h-3.1a15.5 15.5 0 0 0-1.1-5A8 8 0 0 1 18 11ZM12 4c.8 1 1.5 3.1 1.8 7h-3.6c.3-3.9 1-6 1.8-7ZM4.1 13h3.1a15.5 15.5 0 0 0 1.1 5A8 8 0 0 1 4.1 13Zm0-2A8 8 0 0 1 8.3 6a15.5 15.5 0 0 0-1.1 5H4.1ZM12 20c-.8-1-1.5-3.1-1.8-7h3.6c-.3 3.9-1 6-1.8 7Zm1.8-2a15.5 15.5 0 0 0 1.1-5H18a8 8 0 0 1-4.2 5Z"/>
+                    </svg>
+                </div>
+
+                <div class="stat-content">
+                    <span class="stat-label">Countries</span>
+                    <strong>{{ "{:,}".format(country_count) }}</strong>
+                    <p>Countries and territories available in the database.</p>
+                </div>
+
+                <span class="stat-glow"></span>
+            </article>
+
+
+            <article class="stat-card stat-violet">
+                <div class="stat-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="m19.8 7.2-3-3a2.5 2.5 0 0 0-3.5 0L4.2 13.3a4 4 0 0 0 5.7 5.7L19.8 9.1a1.35 1.35 0 0 0 0-1.9ZM8.5 17.6a2 2 0 0 1-2.8-2.8l4.1-4.1 2.8 2.8-4.1 4.1Zm5.5-5.5-2.8-2.8 3.5-3.5a.5.5 0 0 1 .7 0l2.8 2.8-4.2 3.5Z"/>
+                    </svg>
+                </div>
+
+                <div class="stat-content">
+                    <span class="stat-label">Antigen Types</span>
+                    <strong>{{ "{:,}".format(antigen_count) }}</strong>
+                    <p>Vaccination antigen types available for analysis.</p>
+                </div>
+
+                <span class="stat-glow"></span>
+            </article>
+
+
+            <article class="stat-card stat-cyan">
+                <div class="stat-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M4 3h16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm2 4v2h12V7H6Zm0 4v2h5v-2H6Zm7 0v2h5v-2h-5Zm-7 4v2h5v-2H6Zm7 0v2h5v-2h-5Z"/>
+                    </svg>
+                </div>
+
+                <div class="stat-content">
+                    <span class="stat-label">Vaccination Records</span>
+                    <strong>{{ "{:,}".format(vaccination_count) }}</strong>
+                    <p>Individual vaccination records represented in the dataset.</p>
+                </div>
+
+                <span class="stat-glow"></span>
+            </article>
+
+
+            <article class="stat-card stat-emerald">
+                <div class="stat-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M7 2h2v2h6V2h2v2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2V2Zm12 8H5v10h14V10Zm-9 2h4v4h-4v-4Z"/>
+                    </svg>
+                </div>
+
+                <div class="stat-content">
+                    <span class="stat-label">Data Timeframe</span>
+                    <strong>{{ first_year }}–{{ last_year }}</strong>
+                    <p>Years covered by vaccination records in the database.</p>
+                </div>
+
+                <span class="stat-glow"></span>
+            </article>
+
+        </div>
+
+    </section>
+
+
+    <section class="journey-section">
+
+        <div class="section-heading-row">
+
+            <div>
+                <div class="eyebrow">
+                    <span class="eyebrow-dot"></span>
+                    EXPLORE THE DATA
+                </div>
+
+                <h2>Two levels of analysis</h2>
+
+                <p>
+                    Start with a focused vaccination view, then move deeper
+                    into changes in population-based vaccination rates.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="journey-grid">
+
+            <a class="journey-card journey-blue"
+               href="{{ url_for('vaccination') }}">
+
+                <span class="journey-step">01</span>
+
+                <div class="journey-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M4 5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5Zm3 11h2v-5H7v5Zm4 0h2V7h-2v9Zm4 0h2V9h-2v7Z"/>
+                    </svg>
+                </div>
+
+                <div>
+                    <span class="journey-kicker">LEVEL 2A</span>
+                    <h3>Vaccination Explorer</h3>
+                    <p>
+                        Filter vaccination performance by antigen, year,
+                        country and region, then compare regional summaries.
+                    </p>
+                </div>
+
+                <span class="journey-arrow">↗</span>
+            </a>
+
+
+            <a class="journey-card journey-violet"
+               href="{{ url_for('improvement') }}">
+
+                <span class="journey-step">02</span>
+
+                <div class="journey-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M5 17.6 9.3 13l3 3L20 8.4V12h2V5h-7v2h3.6l-6.3 6.3-3-3L3.5 16 5 17.6ZM4 20h16v2H4v-2Z"/>
+                    </svg>
+                </div>
+
+                <div>
+                    <span class="journey-kicker">LEVEL 3A</span>
+                    <h3>Improvement Analysis</h3>
+                    <p>
+                        Compare two years and identify countries with the
+                        largest population-based vaccination rate improvements.
+                    </p>
+                </div>
+
+                <span class="journey-arrow">↗</span>
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
+
+{% endblock %}

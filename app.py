@@ -62,16 +62,10 @@ def landing():
 def vaccination():
     conn = get_db_connection()
 
-    # User selections
     selected_antigen = request.args.get("antigen")
     selected_year = request.args.get("year")
     selected_region = request.args.get("region")
     selected_country = request.args.get("country")
-
-
-    # =========================
-    # DROPDOWN DATA
-    # =========================
 
     antigens = conn.execute("""
         SELECT
@@ -103,22 +97,13 @@ def vaccination():
         ORDER BY name
     """).fetchall()
 
-
-    # =========================
-    # RESULTS
-    # =========================
-
     results = []
     regional_summary = []
     missing_coverage_count = 0
 
-
     if selected_antigen and selected_year:
 
-        # =====================================
-        # DATA ANOMALY - MISSING COVERAGE
-        # =====================================
-
+        # Missing coverage count
         missing_query = """
             SELECT COUNT(*) AS total
 
@@ -157,11 +142,7 @@ def vaccination():
             missing_params
         ).fetchone()["total"]
 
-
-        # =====================================
-        # TABLE 1 - COUNTRY RESULTS
-        # =====================================
-
+        # Table 1
         query = """
             SELECT
                 Vaccination.antigen,
@@ -210,11 +191,7 @@ def vaccination():
             params
         ).fetchall()
 
-
-        # =====================================
-        # TABLE 2 - REGIONAL SUMMARY
-        # =====================================
-
+        # Table 2
         summary_query = """
             SELECT
                 Vaccination.antigen,
@@ -278,9 +255,7 @@ def vaccination():
             summary_params
         ).fetchall()
 
-
     conn.close()
-
 
     return render_template(
         "vaccination.html",
@@ -304,7 +279,172 @@ def vaccination():
 
 @app.route("/improvement")
 def improvement():
-    return render_template("improvement.html")
+    conn = get_db_connection()
+
+    # Get user selections
+    selected_antigen = request.args.get("antigen")
+    start_year = request.args.get("start_year")
+    end_year = request.args.get("end_year")
+    limit = request.args.get("limit", "10")
+
+    # =========================
+    # DROPDOWN DATA
+    # =========================
+
+    antigens = conn.execute("""
+        SELECT
+            AntigenID,
+            name
+        FROM Antigen
+        ORDER BY AntigenID
+    """).fetchall()
+
+    years = conn.execute("""
+        SELECT DISTINCT year
+        FROM Vaccination
+        ORDER BY year DESC
+    """).fetchall()
+
+    # =========================
+    # RESULTS
+    # =========================
+
+    improvement_results = []
+    error_message = None
+
+    if selected_antigen and start_year and end_year:
+
+        try:
+            start_year_int = int(start_year)
+            end_year_int = int(end_year)
+            limit_int = int(limit)
+
+        except ValueError:
+            error_message = "Invalid year or result limit."
+
+        else:
+            if start_year_int >= end_year_int:
+                error_message = "Start year must be earlier than end year."
+
+            elif limit_int not in [5, 10, 20]:
+                error_message = "Invalid number of countries selected."
+
+            else:
+                query = """
+                    SELECT
+                        ROW_NUMBER() OVER (
+                            ORDER BY
+                                (
+                                    (
+                                        CAST(end_v.doses AS REAL)
+                                        / end_p.population * 100
+                                    )
+                                    -
+                                    (
+                                        CAST(start_v.doses AS REAL)
+                                        / start_p.population * 100
+                                    )
+                                ) DESC
+                        ) AS rank,
+
+                        Country.name AS country_name,
+
+                        ROUND(
+                            CAST(start_v.doses AS REAL)
+                            / start_p.population * 100,
+                            2
+                        ) AS start_rate,
+
+                        ROUND(
+                            CAST(end_v.doses AS REAL)
+                            / end_p.population * 100,
+                            2
+                        ) AS end_rate,
+
+                        ROUND(
+                            (
+                                CAST(end_v.doses AS REAL)
+                                / end_p.population * 100
+                            )
+                            -
+                            (
+                                CAST(start_v.doses AS REAL)
+                                / start_p.population * 100
+                            ),
+                            2
+                        ) AS improvement
+
+                    FROM Vaccination AS start_v
+
+                    JOIN Vaccination AS end_v
+                        ON start_v.country = end_v.country
+                        AND start_v.antigen = end_v.antigen
+
+                    JOIN Country
+                        ON start_v.country = Country.CountryID
+
+                    JOIN CountryPopulation AS start_p
+                        ON start_v.country = start_p.country
+                        AND start_v.year = start_p.year
+
+                    JOIN CountryPopulation AS end_p
+                        ON end_v.country = end_p.country
+                        AND end_v.year = end_p.year
+
+                    WHERE start_v.antigen = ?
+                      AND end_v.antigen = ?
+                      AND start_v.year = ?
+                      AND end_v.year = ?
+
+                      -- Population must be valid
+                      AND start_p.population > 0
+                      AND end_p.population > 0
+
+                      -- Both years must contain dose data
+                      AND TRIM(CAST(start_v.doses AS TEXT)) != ''
+                      AND TRIM(CAST(end_v.doses AS TEXT)) != ''
+
+                      -- Only countries with a positive improvement
+                      AND (
+                            (
+                                CAST(end_v.doses AS REAL)
+                                / end_p.population * 100
+                            )
+                            -
+                            (
+                                CAST(start_v.doses AS REAL)
+                                / start_p.population * 100
+                            )
+                          ) > 0
+
+                    ORDER BY improvement DESC
+                    LIMIT ?
+                """
+
+                improvement_results = conn.execute(
+                    query,
+                    [
+                        selected_antigen,
+                        selected_antigen,
+                        start_year_int,
+                        end_year_int,
+                        limit_int
+                    ]
+                ).fetchall()
+
+    conn.close()
+
+    return render_template(
+        "improvement.html",
+        antigens=antigens,
+        years=years,
+        improvement_results=improvement_results,
+        selected_antigen=selected_antigen,
+        start_year=start_year,
+        end_year=end_year,
+        limit=limit,
+        error_message=error_message
+    )
 
 
 if __name__ == "__main__":
