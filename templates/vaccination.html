@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Vaccination Explorer</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+<body>
+
+    <main class="vaccination-page">
+
+        <a href="/">← Back to Home</a>
+
+        <h1>Vaccination Explorer</h1>
+
+        <p>
+            Explore vaccination coverage across countries,
+            regions and years.
+        </p>
+
+
+        <!-- ========================== -->
+        <!-- FILTERS -->
+        <!-- ========================== -->
+
+        <form method="GET">
+
+            <!-- Antigen Filter -->
+            <div class="filter-group">
+
+                <label for="antigen">
+                    Antigen
+                </label>
+
+                <select name="antigen" id="antigen">
+
+                    {% for antigen in antigens %}
+
+                        <option
+                            value="{{ antigen['AntigenID'] }}"
+                            {% if antigen['AntigenID'] == selected_antigen %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ antigen['AntigenID'] }} - {{ antigen['name'] }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <!-- Year Filter -->
+            <div class="filter-group">
+
+                <label for="year">
+                    Year
+                </label>
+
+                <select name="year" id="year">
+
+                    {% for year in years %}
+
+                        <option
+                            value="{{ year['year'] }}"
+                            {% if year['year']|string == selected_year %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ year['year'] }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <!-- Region Filter -->
+            <div class="filter-group">
+
+                <label for="region">
+                    Region
+                </label>
+
+                <select name="region" id="region">
+
+                    <option
+                        value=""
+                        {% if not selected_region %}
+                            selected
+                        {% endif %}
+                    >
+                        All Regions
+                    </option>
+
+                    {% for region in regions %}
+
+                        <option
+                            value="{{ region['RegionID'] }}"
+                            {% if region['RegionID'] == selected_region %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ region['region'] }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <!-- Country Filter -->
+            <div class="filter-group">
+
+                <label for="country">
+                    Country
+                </label>
+
+                <select name="country" id="country">
+
+                    <option
+                        value=""
+                        {% if not selected_country %}
+                            selected
+                        {% endif %}
+                    >
+                        All Countries
+                    </option>
+
+                    {% for country in countries %}
+
+                        <option
+                            value="{{ country['CountryID'] }}"
+                            {% if country['CountryID'] == selected_country %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ country['name'] }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <button type="submit">
+                Apply Filters
+            </button>
+
+        </form>
+
+
+        {% if selected_antigen and selected_year %}
+
+
+            <!-- ========================== -->
+            <!-- DATA QUALITY NOTICE -->
+            <!-- ========================== -->
+
+            {% if missing_coverage_count > 0 %}
+
+                <section class="data-quality-note">
+
+                    <h3>Data Quality Notice</h3>
+
+                    <p>
+                        {{ missing_coverage_count }} vaccination records for the
+                        selected filters have no reported coverage.
+                        These records were excluded from the calculations.
+                    </p>
+
+                </section>
+
+            {% endif %}
+
+
+            <!-- ========================== -->
+            <!-- TABLE 1 - COUNTRY RESULTS -->
+            <!-- ========================== -->
+
+            <section class="results-section">
+
+                <h2>Country Results</h2>
+
+                <p>
+                    Countries achieving at least 90% of the vaccination target.
+                </p>
+
+
+                {% if results %}
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>Antigen</th>
+                                <th>Year</th>
+                                <th>Country</th>
+                                <th>Region</th>
+                                <th>Percentage of Target</th>
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for row in results %}
+
+                                <tr>
+                                    <td>{{ row['antigen'] }}</td>
+                                    <td>{{ row['year'] }}</td>
+                                    <td>{{ row['country_name'] }}</td>
+                                    <td>{{ row['region_name'] }}</td>
+                                    <td>{{ row['coverage'] }}%</td>
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+
+                {% else %}
+
+                    <p>
+                        No countries met at least 90% of the vaccination
+                        target for the selected filters.
+                    </p>
+
+                {% endif %}
+
+            </section>
+
+
+            <!-- ========================== -->
+            <!-- TABLE 2 - REGIONAL SUMMARY -->
+            <!-- ========================== -->
+
+            <section class="results-section">
+
+                <h2>Regional Vaccination Summary</h2>
+
+                <p>
+                    Average vaccination coverage and the number of countries
+                    achieving at least 90% of the vaccination target in each region.
+                </p>
+
+
+                {% if regional_summary %}
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>Antigen</th>
+                                <th>Year</th>
+                                <th>Region</th>
+                                <th>Average Coverage</th>
+                                <th>Countries that met 90% of target</th>
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for row in regional_summary %}
+
+                                <tr>
+                                    <td>{{ row['antigen'] }}</td>
+                                    <td>{{ row['year'] }}</td>
+                                    <td>{{ row['region_name'] }}</td>
+                                    <td>{{ row['average_coverage'] }}%</td>
+                                    <td>{{ row['countries_above_90'] }}</td>
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+
+                {% else %}
+
+                    <p>
+                        No regional vaccination data is available
+                        for the selected filters.
+                    </p>
+
+                {% endif %}
+
+
+                <p class="data-note">
+                    Regional coverage and 90% target attainment are shown as
+                    indicators of vaccination performance. A specific herd
+                    immunity threshold is not defined in the provided dataset.
+                </p>
+
+            </section>
+
+        {% endif %}
+
+    </main>
+
+</body>
+
+</html>
