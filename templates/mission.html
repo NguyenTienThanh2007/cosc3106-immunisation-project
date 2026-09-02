@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+
+{% block title %}Our Mission{% endblock %}
+
+{% block content %}
+
+<main class="page mission-page">
+
+    <section class="page-hero compact-hero mission-hero">
+
+        <div>
+            <div class="eyebrow">
+                <span class="eyebrow-dot"></span>
+                LEVEL 1B · MISSION STATEMENT
+            </div>
+
+            <h1>Informed Communities, Healthier Futures</h1>
+
+            <p>
+                Global Immunisation Explorer turns raw immunisation and
+                infection records into information that anyone — from a
+                policy advisor to a curious parent — can actually use to
+                understand how the world is progressing against
+                preventable disease.
+            </p>
+        </div>
+
+        <div class="hero-side-card">
+            <span class="side-card-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2 4 5v6c0 5.5 3.4 10.4 8 12 4.6-1.6 8-6.5 8-12V5l-8-3Zm0 2.2 6 2.2v4.6c0 4.5-2.7 8.6-6 9.9-3.3-1.3-6-5.4-6-9.9V6.4l6-2.2Zm-1 5.3h2v6h-2v-6Zm0 7.5h2v2h-2v-2Z"/>
+                </svg>
+            </span>
+
+            <div>
+                <span>Built on</span>
+                <strong>Unbiased data</strong>
+            </div>
+        </div>
+
+    </section>
+
+
+    <section class="results-grid mission-grid">
+
+        <article class="result-card">
+
+            <div class="result-heading">
+                <div class="result-icon blue-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm1 15h-2v-2h2v2Zm0-4h-2V7h2v6Z"/>
+                    </svg>
+                </div>
+
+                <div>
+                    <span class="result-kicker">THE CHALLENGE</span>
+                    <h2>Why this site exists</h2>
+                    <p>Preventable-disease data is often scattered, technical or one-sided.</p>
+                </div>
+            </div>
+
+            <p>
+                Vaccination protects individuals and, at scale, whole
+                populations — but the public conversation around it is
+                frequently shaped by anecdote rather than evidence. This
+                site presents immunisation and infection data exactly as
+                it is recorded, without editorialising, so every visitor
+                can draw their own informed conclusions.
+            </p>
+
+            <ul class="content-list">
+                <li>Present coverage, dose and case data in plain, respectful language.</li>
+                <li>Flag missing or inconsistent records instead of hiding them.</li>
+                <li>Let every user filter down to the country, region or economic group they care about.</li>
+            </ul>
+
+        </article>
+
+
+        <article class="result-card">
+
+            <div class="result-heading">
+                <div class="result-icon violet-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M4 5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5Zm4 12v-4H6v4h2Zm5 0V8h-2v9h2Zm5 0v-7h-2v7h2Z"/>
+                    </svg>
+                </div>
+
+                <div>
+                    <span class="result-kicker">HOW TO USE IT</span>
+                    <h2>Three ways to explore</h2>
+                    <p>Every page builds on the last, from a snapshot to a deep-dive.</p>
+                </div>
+            </div>
+
+            <ul class="content-list">
+                <li><strong>Overview</strong> — a snapshot of the dataset: countries, antigens and the years covered.</li>
+                <li><strong>Vaccination &amp; Infection Explorers</strong> — filter coverage and case data by country, region, year or economic status.</li>
+                <li><strong>Improvement &amp; Above-Average views</strong> — deep-dive comparisons that surface the countries most worth watching.</li>
+            </ul>
+
+        </article>
+
+    </section>
+
+
+    <section class="snapshot-section persona-section">
+
+        <div class="section-heading-row">
+            <div>
+                <div class="eyebrow">
+                    <span class="eyebrow-dot"></span>
+                    WHO WE BUILT THIS FOR
+                </div>
+
+                <h2>Meet the people using this data</h2>
+
+                <p>These personas guided every design decision on this website.</p>
+            </div>
+        </div>
+
+        {% if personas %}
+
+            <div class="persona-grid">
+                {% for persona in personas %}
+                    <article class="persona-card">
+                        <span class="persona-avatar">{{ persona['persona_name'][:1] }}</span>
+
+                        <span class="persona-role">{{ persona['role'] }}</span>
+                        <h3>{{ persona['persona_name'] }}</h3>
+                        <p>{{ persona['description'] }}</p>
+
+                        <div class="persona-goal">
+                            <strong>Primary goal</strong>
+                            {{ persona['goals'] }}
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+
+        {% else %}
+
+            <div class="empty-state">
+                <span class="empty-icon">◎</span>
+                <h3>No personas stored yet</h3>
+                <p>Add rows to the Persona table in the database to introduce your target users here.</p>
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <section class="result-card team-section">
+
+        <div class="result-heading">
+            <div class="result-icon cyan-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3Zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3Zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5Zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5Z"/>
+                </svg>
+            </div>
+
+            <div>
+                <span class="result-kicker">BEHIND THIS WEBSITE</span>
+                <h2>Project team</h2>
+                <p>Names and student numbers are stored in and retrieved from the database.</p>
+            </div>
+        </div>
+
+        {% if team_members %}
+
+            <div class="team-list">
+                {% for member in team_members %}
+                    <div class="team-member">
+                        <span class="team-avatar">{{ member['full_name'][:1] }}</span>
+
+                        <div>
+                            <strong>{{ member['full_name'] }}</strong>
+                            <span>{{ member['student_number'] }}</span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+        {% else %}
+
+            <div class="empty-state">
+                <span class="empty-icon">◎</span>
+                <h3>No team members stored yet</h3>
+                <p>Add rows to the TeamMember table in the database to list your team here.</p>
+            </div>
+
+        {% endif %}
+
+    </section>
+
+</main>
+
+{% endblock %}

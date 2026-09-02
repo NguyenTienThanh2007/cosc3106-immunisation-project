@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Infection Explorer{% endblock %}
+
+{% block content %}
+
+<main class="page data-page">
+
+    <section class="page-hero compact-hero infections-hero">
+
+        <div>
+            <div class="eyebrow">
+                <span class="eyebrow-dot"></span>
+                LEVEL 2B · FOCUSED VIEW
+            </div>
+
+            <h1>Infection Explorer</h1>
+
+            <p>
+                Explore reported infection cases per 100,000 people across
+                countries grouped by economic status, and compare totals
+                across every economic phase at once.
+            </p>
+        </div>
+
+        <div class="hero-side-card infections-side-card">
+            <span class="side-card-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M3 5h18v2H3V5Zm3 4h12v2H6V9Zm2 4h8v2H8v-2Zm2 4h4v2h-4v-2Z"/>
+                </svg>
+            </span>
+
+            <div>
+                <span>Focused analysis</span>
+                <strong>Economy + Infection</strong>
+            </div>
+        </div>
+
+    </section>
+
+
+    <section class="filter-panel">
+
+        <div class="panel-heading">
+
+            <div>
+                <span class="panel-kicker">FILTER DATA</span>
+                <h2>Build your infection view</h2>
+                <p>
+                    Economic status, infection type and year are all
+                    required to generate results.
+                </p>
+            </div>
+
+            <span class="filter-icon-large infections-filter-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                    <path d="M3 4h18v2.2l-7 7V20l-4 2v-8.8l-7-7V4Zm3.4 2 5.6 5.6L17.6 6H6.4Z"/>
+                </svg>
+            </span>
