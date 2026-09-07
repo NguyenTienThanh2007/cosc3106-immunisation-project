@@ -447,5 +447,405 @@ def improvement():
     )
 
 
+# =========================
+# LEVEL 1B - MISSION STATEMENT
+# =========================
+
+@app.route("/mission")
+def mission():
+    conn = get_db_connection()
+
+    personas = conn.execute("""
+        SELECT
+            PersonaID,
+            persona_name,
+            role,
+            description,
+            goals
+        FROM Persona
+        ORDER BY PersonaID
+    """).fetchall()
+
+    team_members = conn.execute("""
+        SELECT
+            TeamMemberID,
+            full_name,
+            student_number
+        FROM TeamMember
+        ORDER BY TeamMemberID
+    """).fetchall()
+
+    conn.close()
+
+    return render_template(
+        "mission.html",
+        personas=personas,
+        team_members=team_members
+    )
+
+
+# =========================
+# LEVEL 2B - INFECTION EXPLORER
+# =========================
+
+# Whitelist of columns that Table 1 may be sorted by, so the user-selected sort criterion can never be used to inject SQL.
+INFECTION_SORT_COLUMNS = {
+    "country": "country_name",
+    "rate": "cases_per_100k"
+}
+
+
+@app.route("/infections")
+def infections():
+    conn = get_db_connection()
+
+    selected_economy = request.args.get("economy")
+    selected_infection = request.args.get("infection")
+    selected_year = request.args.get("year")
+
+    sort_by = request.args.get("sort_by", "rate")
+    sort_dir = request.args.get("sort_dir", "desc")
+
+    if sort_by not in INFECTION_SORT_COLUMNS:
+        sort_by = "rate"
+
+    if sort_dir not in ("asc", "desc"):
+        sort_dir = "desc"
+
+    # The link a user clicks next on each header - toggles the direction if that column is already active, otherwise starts fresh.
+    country_sort_next = "desc" if (sort_by == "country" and sort_dir == "asc") else "asc"
+    rate_sort_next = "asc" if (sort_by == "rate" and sort_dir == "desc") else "desc"
+
+    economies = conn.execute("""
+        SELECT
+            economyID,
+            phase
+        FROM Economy
+        ORDER BY economyID
+    """).fetchall()
+
+    infection_types = conn.execute("""
+        SELECT
+            id,
+            description
+        FROM Infection_Type
+        ORDER BY description
+    """).fetchall()
+
+    years = conn.execute("""
+        SELECT DISTINCT year
+        FROM InfectionData
+        ORDER BY year DESC
+    """).fetchall()
+
+    country_results = []
+    phase_summary = []
+    missing_data_count = 0
+
+    if selected_economy and selected_infection and selected_year:
+
+        # Missing / unusable data count for the selected filters
+        missing_query = """
+            SELECT COUNT(*) AS total
+
+            FROM InfectionData
+
+            JOIN Country
+                ON InfectionData.country = Country.CountryID
+
+            LEFT JOIN CountryPopulation
+                ON InfectionData.country = CountryPopulation.country
+                AND InfectionData.year = CountryPopulation.year
+
+            WHERE InfectionData.inf_type = ?
+              AND InfectionData.year = ?
+              AND Country.economy = ?
+              AND (
+                    InfectionData.cases IS NULL
+                    OR TRIM(CAST(InfectionData.cases AS TEXT)) = ''
+                    OR CountryPopulation.population IS NULL
+                    OR CountryPopulation.population <= 0
+                  )
+        """
+
+        missing_data_count = conn.execute(
+            missing_query,
+            [selected_infection, selected_year, selected_economy]
+        ).fetchone()["total"]
+
+        # Table 1: country-level infection rate for the selected economic status, infection type and year.
+        order_column = INFECTION_SORT_COLUMNS[sort_by]
+        order_clause = f"{order_column} {sort_dir.upper()}"
+
+        country_query = f"""
+            SELECT
+                Infection_Type.description AS infection_name,
+                Country.name AS country_name,
+                Economy.phase AS economic_phase,
+                InfectionData.year,
+
+                ROUND(
+                    CAST(InfectionData.cases AS REAL)
+                    / CountryPopulation.population * 100000,
+                    2
+                ) AS cases_per_100k
+
+            FROM InfectionData
+
+            JOIN Country
+                ON InfectionData.country = Country.CountryID
+
+            JOIN Economy
+                ON Country.economy = Economy.economyID
+
+            JOIN Infection_Type
+                ON InfectionData.inf_type = Infection_Type.id
+
+            JOIN CountryPopulation
+                ON InfectionData.country = CountryPopulation.country
+                AND InfectionData.year = CountryPopulation.year
+
+            WHERE InfectionData.inf_type = ?
+              AND InfectionData.year = ?
+              AND Country.economy = ?
+              AND TRIM(CAST(InfectionData.cases AS TEXT)) != ''
+              AND CountryPopulation.population > 0
+
+            ORDER BY {order_clause}
+        """
+
+        country_results = conn.execute(
+            country_query,
+            [selected_infection, selected_year, selected_economy]
+        ).fetchall()
+
+        # Table 2: combines Country + Economy + InfectionData to total
+        # cases for every economic phase (not just the one selected above), so the user can see the full picture in one place.
+        phase_query = """
+            SELECT
+                Infection_Type.description AS infection_name,
+                Economy.phase AS economic_phase,
+                InfectionData.year,
+                SUM(InfectionData.cases) AS total_cases
+
+            FROM InfectionData
+
+            JOIN Country
+                ON InfectionData.country = Country.CountryID
+
+            JOIN Economy
+                ON Country.economy = Economy.economyID
+
+            JOIN Infection_Type
+                ON InfectionData.inf_type = Infection_Type.id
+
+            WHERE InfectionData.inf_type = ?
+              AND InfectionData.year = ?
+              AND TRIM(CAST(InfectionData.cases AS TEXT)) != ''
+
+            GROUP BY
+                Economy.economyID,
+                Economy.phase,
+                InfectionData.year,
+                Infection_Type.description
+
+            ORDER BY Economy.economyID ASC
+        """
+
+        phase_summary = conn.execute(
+            phase_query,
+            [selected_infection, selected_year]
+        ).fetchall()
+
+    conn.close()
+
+    return render_template(
+        "infections.html",
+        economies=economies,
+        infection_types=infection_types,
+        years=years,
+        country_results=country_results,
+        phase_summary=phase_summary,
+        missing_data_count=missing_data_count,
+        selected_economy=selected_economy,
+        selected_infection=selected_infection,
+        selected_year=selected_year,
+        sort_by=sort_by,
+        sort_dir=sort_dir,
+        country_sort_next=country_sort_next,
+        rate_sort_next=rate_sort_next
+    )
+
+
+# =========================
+# LEVEL 3B - ABOVE-AVERAGE INFECTION RATE
+# =========================
+
+# Whitelist of sort options for the ranked country list, so the user-selected sort criterion can never be used to inject SQL.
+INFECTION_RATE_SORT = {
+    "rate_desc": "rate_per_100k DESC",
+    "rate_asc": "rate_per_100k ASC",
+    "country": "country_name ASC"
+}
+
+
+@app.route("/infection-rate")
+def infection_rate():
+    conn = get_db_connection()
+
+    selected_infection = request.args.get("infection")
+    selected_year = request.args.get("year")
+    sort_option = request.args.get("sort", "rate_desc")
+
+    if sort_option not in INFECTION_RATE_SORT:
+        sort_option = "rate_desc"
+
+    infection_types = conn.execute("""
+        SELECT
+            id,
+            description
+        FROM Infection_Type
+        ORDER BY description
+    """).fetchall()
+
+    years = conn.execute("""
+        SELECT DISTINCT year
+        FROM InfectionData
+        ORDER BY year DESC
+    """).fetchall()
+
+    infection_name = None
+    global_rate = None
+    above_average_countries = []
+
+    if selected_infection and selected_year:
+
+        infection_row = conn.execute("""
+            SELECT description
+            FROM Infection_Type
+            WHERE id = ?
+        """, [selected_infection]).fetchone()
+
+        infection_name = infection_row["description"] if infection_row else selected_infection
+
+        # Global reported infection rate per 100,000 people, worldwide, for the selected infection type and year.
+        global_query = """
+            SELECT
+                ROUND(
+                    SUM(InfectionData.cases) * 1.0
+                    / SUM(CountryPopulation.population) * 100000,
+                    2
+                ) AS global_rate
+
+            FROM InfectionData
+
+            JOIN CountryPopulation
+                ON InfectionData.country = CountryPopulation.country
+                AND InfectionData.year = CountryPopulation.year
+
+            WHERE InfectionData.inf_type = ?
+              AND InfectionData.year = ?
+              AND TRIM(CAST(InfectionData.cases AS TEXT)) != ''
+              AND CountryPopulation.population > 0
+        """
+
+        global_row = conn.execute(
+            global_query,
+            [selected_infection, selected_year]
+        ).fetchone()
+
+        global_rate = global_row["global_rate"] if global_row else None
+
+        if global_rate is not None:
+
+            order_clause = INFECTION_RATE_SORT[sort_option]
+
+            # A single query: the "global_stats" CTE calculates the
+            # worldwide rate once, then every country's rate is compared against it in the same JOIN - no Python post-processing needed.
+            rate_query = f"""
+                WITH global_stats AS (
+                    SELECT
+                        SUM(InfectionData.cases) * 1.0
+                        / SUM(CountryPopulation.population) * 100000
+                        AS global_rate
+
+                    FROM InfectionData
+
+                    JOIN CountryPopulation
+                        ON InfectionData.country = CountryPopulation.country
+                        AND InfectionData.year = CountryPopulation.year
+
+                    WHERE InfectionData.inf_type = ?
+                      AND InfectionData.year = ?
+                      AND TRIM(CAST(InfectionData.cases AS TEXT)) != ''
+                      AND CountryPopulation.population > 0
+                )
+
+                SELECT
+                    Country.name AS country_name,
+
+                    ROUND(
+                        CAST(InfectionData.cases AS REAL)
+                        / CountryPopulation.population * 100000,
+                        2
+                    ) AS rate_per_100k,
+
+                    ROUND(
+                        (
+                            CAST(InfectionData.cases AS REAL)
+                            / CountryPopulation.population * 100000
+                        )
+                        - global_stats.global_rate,
+                        2
+                    ) AS rate_above_global
+
+                FROM InfectionData
+
+                JOIN Country
+                    ON InfectionData.country = Country.CountryID
+
+                JOIN CountryPopulation
+                    ON InfectionData.country = CountryPopulation.country
+                    AND InfectionData.year = CountryPopulation.year
+
+                JOIN global_stats
+
+                WHERE InfectionData.inf_type = ?
+                  AND InfectionData.year = ?
+                  AND TRIM(CAST(InfectionData.cases AS TEXT)) != ''
+                  AND CountryPopulation.population > 0
+                  AND (
+                        CAST(InfectionData.cases AS REAL)
+                        / CountryPopulation.population * 100000
+                      ) > global_stats.global_rate
+
+                ORDER BY {order_clause}
+            """
+
+            above_average_countries = conn.execute(
+                rate_query,
+                [
+                    selected_infection,
+                    selected_year,
+                    selected_infection,
+                    selected_year
+                ]
+            ).fetchall()
+
+    conn.close()
+
+    return render_template(
+        "infection_rate.html",
+        infection_types=infection_types,
+        years=years,
+        infection_name=infection_name,
+        global_rate=global_rate,
+        above_average_countries=above_average_countries,
+        selected_infection=selected_infection,
+        selected_year=selected_year,
+        sort_option=sort_option
+    )
+
+
 if __name__ == "__main__":
     app.run(debug=True, port=5001)

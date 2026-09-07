@@ -3737,3 +3737,519 @@ tbody tr:last-child td {
             auto !important;
     }
 }
+
+
+/* ============================================================
+   LEVEL 1B / 2B / 3B — PAGE HERO ACCENTS
+   ============================================================ */
+
+.mission-hero::after {
+    background:
+        radial-gradient(
+            circle,
+            rgba(18, 149, 107, .15),
+            transparent 69%
+        );
+}
+
+.mission-hero h1 {
+    background:
+        linear-gradient(
+            105deg,
+            #315be8,
+            #12956b 80%
+        );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    color: transparent;
+}
+
+.infections-hero::after {
+    background:
+        radial-gradient(
+            circle,
+            rgba(10, 159, 190, .15),
+            transparent 69%
+        );
+}
+
+.infections-hero h1 {
+    background:
+        linear-gradient(
+            105deg,
+            #0a9fbe,
+            #315be8 80%
+        );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    color: transparent;
+}
+
+.rate-hero::after {
+    background:
+        radial-gradient(
+            circle,
+            rgba(217, 95, 150, .16),
+            transparent 69%
+        );
+}
+
+.rate-hero h1 {
+    background:
+        linear-gradient(
+            105deg,
+            #d95f96,
+            #d38b2f 85%
+        );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    color: transparent;
+}
+
+.infections-side-card .side-card-icon,
+.infections-filter-icon {
+    color: #0a8fab;
+
+    background:
+        rgba(10, 159, 190, .10);
+}
+
+.rate-side-card .side-card-icon,
+.rate-filter-icon {
+    color: #c2467f;
+
+    background:
+        rgba(217, 95, 150, .10);
+}
+
+.infection-filter-grid,
+.rate-filter-grid {
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr))
+        auto;
+}
+
+.cyan-icon {
+    color: #078fa8;
+
+    background:
+        rgba(7, 143, 168, .09);
+}
+
+.emerald-icon {
+    color: #12956b;
+
+    background:
+        rgba(18, 149, 107, .09);
+}
+
+.rose-icon {
+    color: #c2467f;
+
+    background:
+        rgba(217, 95, 150, .09);
+}
+
+
+/* ============================================================
+   SORTABLE TABLE HEADERS  (Level 2B)
+   ============================================================ */
+
+.sortable-th a {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    color: inherit;
+}
+
+.sortable-th a:hover {
+    text-decoration: underline;
+}
+
+.sort-arrow {
+    opacity: .8;
+
+    font-size: .6rem;
+}
+
+
+/* ============================================================
+   GLOBAL RATE ROW / ALERT METRICS  (Level 3B)
+   ============================================================ */
+
+.rate-results {
+    margin-top: 18px;
+}
+
+.global-row td {
+    color: #37476d;
+
+    background:
+        rgba(112, 73, 216, .07);
+
+    font-weight: 780;
+}
+
+.metric-alert {
+    color: #b7642f;
+    font-weight: 820;
+}
+
+.alert-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 7px 10px;
+
+    border-radius: 999px;
+
+    color: #b05a26;
+
+    background:
+        rgba(211, 139, 47, .10);
+
+    font-size: .68rem;
+    font-weight: 830;
+}
+
+.alert-arrow {
+    font-size: .75rem;
+}
+
+
+/* ============================================================
+   MISSION PAGE — CONTENT LISTS
+   ============================================================ */
+
+.mission-grid {
+    margin-top: 34px;
+}
+
+.content-list {
+    display: grid;
+    gap: 11px;
+
+    margin: 16px 0 0;
+    padding: 0;
+
+    list-style: none;
+}
+
+.content-list li {
+    position: relative;
+
+    padding-left: 22px;
+
+    color: var(--muted);
+
+    font-size: .82rem;
+    line-height: 1.6;
+}
+
+.content-list li::before {
+    content: "";
+
+    position: absolute;
+    left: 0;
+    top: 7px;
+
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #4d75f3,
+            #8958ec
+        );
+
+    box-shadow:
+        0 0 0 4px
+        rgba(83, 102, 236, .08);
+}
+
+.content-list strong {
+    color: #37476d;
+}
+
+
+/* ============================================================
+   PERSONA CARDS
+   ============================================================ */
+
+.persona-section {
+    margin-top: 52px;
+}
+
+.persona-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 16px;
+
+    margin-top: 4px;
+}
+
+.persona-card {
+    position: relative;
+
+    padding: 22px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, .77);
+
+    border-radius: 24px;
+
+    background:
+        linear-gradient(
+            140deg,
+            rgba(255, 255, 255, .69),
+            rgba(255, 255, 255, .38)
+        );
+
+    -webkit-backdrop-filter:
+        blur(23px)
+        saturate(170%);
+    backdrop-filter:
+        blur(23px)
+        saturate(170%);
+
+    box-shadow:
+        inset 0 1px 0
+        rgba(255, 255, 255, .96),
+        var(--shadow-sm);
+
+    transition:
+        transform .27s var(--ease),
+        box-shadow .27s var(--ease);
+}
+
+.persona-card:hover {
+    transform:
+        translate3d(0, -6px, 0);
+
+    box-shadow:
+        var(--shadow-md);
+}
+
+.persona-avatar {
+    width: 42px;
+    height: 42px;
+
+    display: grid;
+    place-items: center;
+
+    margin-bottom: 14px;
+
+    border-radius: 13px;
+
+    color: #3260dc;
+
+    background:
+        rgba(72, 112, 233, .10);
+
+    font-size: .92rem;
+    font-weight: 850;
+}
+
+.persona-card:nth-child(2) .persona-avatar {
+    color: #7050df;
+
+    background:
+        rgba(112, 80, 223, .10);
+}
+
+.persona-card:nth-child(3) .persona-avatar {
+    color: #078fa8;
+
+    background:
+        rgba(7, 143, 168, .10);
+}
+
+.persona-card:nth-child(4) .persona-avatar {
+    color: #168a68;
+
+    background:
+        rgba(22, 138, 104, .10);
+}
+
+.persona-role {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: #8791a6;
+
+    font-size: .63rem;
+    font-weight: 860;
+    letter-spacing: .08em;
+
+    text-transform: uppercase;
+}
+
+.persona-card h3 {
+    margin-bottom: 8px;
+
+    font-size: 1.1rem;
+}
+
+.persona-card p {
+    margin-bottom: 12px;
+
+    font-size: .8rem;
+}
+
+.persona-goal {
+    padding-top: 12px;
+
+    border-top:
+        1px solid
+        rgba(120, 139, 177, .13);
+
+    color: #566176;
+
+    font-size: .72rem;
+    font-weight: 650;
+    line-height: 1.55;
+}
+
+.persona-goal strong {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #37476d;
+
+    font-size: .63rem;
+    font-weight: 860;
+    letter-spacing: .06em;
+
+    text-transform: uppercase;
+}
+
+
+/* ============================================================
+   TEAM LIST
+   ============================================================ */
+
+.team-section {
+    margin-top: 24px;
+}
+
+.team-list {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 12px;
+
+    margin-top: 4px;
+}
+
+.team-member {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    padding: 13px 15px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, .74);
+
+    border-radius: 16px;
+
+    background:
+        rgba(255, 255, 255, .48);
+
+    box-shadow:
+        inset 0 1px 0
+        rgba(255, 255, 255, .92);
+}
+
+.team-avatar {
+    width: 38px;
+    height: 38px;
+
+    flex: 0 0 auto;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 12px;
+
+    color: #3d60d1;
+
+    background:
+        rgba(67, 101, 222, .10);
+
+    font-size: .76rem;
+    font-weight: 850;
+}
+
+.team-member div {
+    display: grid;
+    gap: 2px;
+}
+
+.team-member strong {
+    color: #263e69;
+    font-size: .82rem;
+}
+
+.team-member span {
+    color: #8791a5;
+
+    font-size: .68rem;
+    font-weight: 650;
+}
+
+
+/* ============================================================
+   NAV — ALLOW WRAPPING FOR ADDITIONAL PAGES
+   ============================================================ */
+
+.nav-links {
+    flex-wrap: wrap;
+    row-gap: 4px;
+}
+
+
+/* ============================================================
+   RESPONSIVE — NEW GRIDS
+   ============================================================ */
+
+@media (max-width: 1080px) {
+
+    .persona-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .infection-filter-grid,
+    .rate-filter-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 650px) {
+
+    .persona-grid,
+    .team-list {
+        grid-template-columns:
+            1fr;
+    }
+}

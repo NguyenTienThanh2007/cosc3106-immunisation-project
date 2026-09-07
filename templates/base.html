@@ -47,6 +47,21 @@
                    href="{{ url_for('improvement') }}">
                     Improvement
                 </a>
+
+                <a class="nav-link {% if request.endpoint == 'mission' %}is-active{% endif %}"
+                   href="{{ url_for('mission') }}">
+                    Mission
+                </a>
+
+                <a class="nav-link {% if request.endpoint == 'infections' %}is-active{% endif %}"
+                   href="{{ url_for('infections') }}">
+                    Infection Explorer
+                </a>
+
+                <a class="nav-link {% if request.endpoint == 'infection_rate' %}is-active{% endif %}"
+                   href="{{ url_for('infection_rate') }}">
+                    Infection Rate
+                </a>
             </div>
 
             <div class="nav-status" aria-label="Dataset status">
