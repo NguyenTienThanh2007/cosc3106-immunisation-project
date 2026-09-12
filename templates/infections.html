@@ -57,3 +57,367 @@
                     <path d="M3 4h18v2.2l-7 7V20l-4 2v-8.8l-7-7V4Zm3.4 2 5.6 5.6L17.6 6H6.4Z"/>
                 </svg>
             </span>
+
+        </div>
+
+
+        <form method="GET" class="filter-grid infection-filter-grid">
+
+            <div class="filter-group">
+                <label for="economy">Economic Status</label>
+
+                <select name="economy" id="economy" required>
+                    <option value="">Select economic status</option>
+
+                    {% for economy in economies %}
+                        <option
+                            value="{{ economy['economyID'] }}"
+                            {% if economy['economyID']|string == selected_economy %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ economy['phase'] }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+
+            <div class="filter-group">
+                <label for="infection">Infection Type</label>
+
+                <select name="infection" id="infection" required>
+                    <option value="">Select infection type</option>
+
+                    {% for infection in infection_types %}
+                        <option
+                            value="{{ infection['id'] }}"
+                            {% if infection['id'] == selected_infection %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ infection['description'] }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+
+            <div class="filter-group">
+                <label for="year">Year</label>
+
+                <select name="year" id="year" required>
+                    <option value="">Select year</option>
+
+                    {% for year in years %}
+                        <option
+                            value="{{ year['year'] }}"
+                            {% if year['year']|string == selected_year %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ year['year'] }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+
+            <div class="filter-actions">
+                <button type="submit" class="submit-button">
+                    <span>Explore data</span>
+                    <span class="button-arrow">→</span>
+                </button>
+
+                <a class="reset-button" href="{{ url_for('infections') }}">
+                    Reset
+                </a>
+            </div>
+
+        </form>
+
+    </section>
+
+
+    {% if selected_economy and selected_infection and selected_year %}
+
+        <section class="selection-summary">
+
+            <div class="selection-title">
+                <span class="selection-pulse"></span>
+                Active analysis
+            </div>
+
+            <div class="selection-chips">
+                <span>{{ selected_infection }}</span>
+                <span>{{ selected_year }}</span>
+                <span>Economic status filtered</span>
+            </div>
+
+        </section>
+
+
+        {% if missing_data_count > 0 %}
+
+            <section class="notice-card warning-note">
+
+                <div class="notice-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 3 1.8 20h20.4L12 3Zm0 5 5.8 10H6.2L12 8Zm-1 3v3h2v-3h-2Zm0 4.5v2h2v-2h-2Z"/>
+                    </svg>
+                </div>
+
+                <div>
+                    <span class="notice-kicker">DATA QUALITY NOTICE</span>
+                    <h3>Incomplete records excluded</h3>
+                    <p>
+                        {{ missing_data_count }} matching record(s) have no
+                        reported cases or no population figure and were
+                        excluded from the calculations below.
+                    </p>
+                </div>
+
+            </section>
+
+        {% endif %}
+
+
+        <div class="results-grid">
+
+            <section class="result-card result-country">
+
+                <div class="result-heading">
+
+                    <div class="result-icon blue-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20ZM8.2 4.9A15 15 0 0 0 7.1 9H4.6a8.1 8.1 0 0 1 3.6-4.1ZM4.1 11h2.7a16.2 16.2 0 0 0 0 2H4.1a8.7 8.7 0 0 1 0-2Zm.5 4h2.5c.2 1.5.6 2.9 1.1 4.1A8.1 8.1 0 0 1 4.6 15ZM11 19.6c-.8-1.1-1.5-2.7-1.8-4.6H11v4.6ZM11 13H9a13 13 0 0 1 0-2h2v2Zm0-4H9.2c.3-1.9 1-3.5 1.8-4.6V9Zm2-4.6c.8 1.1 1.5 2.7 1.8 4.6H13V4.4ZM13 11h2a13 13 0 0 1 0 2h-2v-2Zm0 8.6V15h1.8c-.3 1.9-1 3.5-1.8 4.6Zm2.8-.5c.5-1.2.9-2.6 1.1-4.1h2.5a8.1 8.1 0 0 1-3.6 4.1Zm1.4-6.1a16.2 16.2 0 0 0 0-2h2.7a8.7 8.7 0 0 1 0 2h-2.7Zm-.3-4c-.2-1.5-.6-2.9-1.1-4.1A8.1 8.1 0 0 1 19.4 9h-2.5Z"/>
+                        </svg>
+                    </div>
+
+                    <div>
+                        <span class="result-kicker">COUNTRY RESULTS</span>
+                        <h2>Countries in the selected economic status</h2>
+                        <p>Cases per 100,000 people, ranked by rate.</p>
+                    </div>
+
+                    <span class="result-count">
+                        {{ country_results|length }}
+                        <small>shown</small>
+                    </span>
+
+                </div>
+
+
+                {% if country_results %}
+
+                    <div class="table-wrap">
+
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Preventable Disease</th>
+
+                                    <th class="sortable-th">
+                                        <a href="{{ url_for('infections', economy=selected_economy, infection=selected_infection, year=selected_year, sort_by='country', sort_dir=country_sort_next) }}">
+                                            Country
+                                            {% if sort_by == 'country' %}
+                                                <span class="sort-arrow">{{ '▲' if sort_dir == 'asc' else '▼' }}</span>
+                                            {% endif %}
+                                        </a>
+                                    </th>
+
+                                    <th>Economic Phase</th>
+                                    <th>Year</th>
+
+                                    <th class="sortable-th">
+                                        <a href="{{ url_for('infections', economy=selected_economy, infection=selected_infection, year=selected_year, sort_by='rate', sort_dir=rate_sort_next) }}">
+                                            Cases per 100,000 People
+                                            {% if sort_by == 'rate' %}
+                                                <span class="sort-arrow">{{ '▲' if sort_dir == 'asc' else '▼' }}</span>
+                                            {% endif %}
+                                        </a>
+                                    </th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for row in country_results %}
+                                    <tr>
+                                        <td>
+                                            <span class="table-badge">
+                                                {{ row['infection_name'] }}
+                                            </span>
+                                        </td>
+
+                                        <td class="country-name">
+                                            {{ row['country_name'] }}
+                                        </td>
+
+                                        <td>{{ row['economic_phase'] }}</td>
+                                        <td>{{ row['year'] }}</td>
+
+                                        <td>
+                                            <span class="metric-alert">
+                                                {{ row['cases_per_100k'] }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                    </div>
+
+
+                    <div class="formula-card">
+
+                        <div class="formula-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M4 5h16v2H4V5Zm2 5h5v2H6v-2Zm0 5h5v2H6v-2Zm8-5h4v2h-4v-2Zm0 5h4v2h-4v-2Z"/>
+                            </svg>
+                        </div>
+
+                        <div>
+                            <span class="formula-kicker">CALCULATION METHOD</span>
+                            <h3>How the rate is calculated</h3>
+
+                            <p>
+                                Cases per 100,000 people = reported cases ÷
+                                country population × 100,000. Records with
+                                no reported cases or no population figure
+                                are excluded.
+                            </p>
+                        </div>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="empty-state">
+                        <span class="empty-icon">◎</span>
+                        <h3>No countries matched</h3>
+                        <p>
+                            No country in the selected economic status has
+                            valid case and population data for this
+                            infection type and year.
+                        </p>
+                    </div>
+
+                {% endif %}
+
+            </section>
+
+
+            <section class="result-card result-regional">
+
+                <div class="result-heading">
+
+                    <div class="result-icon violet-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M3 20h18v2H3v-2ZM5 18V9h3v9H5Zm5 0V4h3v14h-3Zm5 0v-6h3v6h-3Z"/>
+                        </svg>
+                    </div>
+
+                    <div>
+                        <span class="result-kicker">ECONOMIC PHASE SUMMARY</span>
+                        <h2>Total cases by economic phase</h2>
+                        <p>Combines every economic phase for this infection type and year.</p>
+                    </div>
+
+                </div>
+
+
+                {% if phase_summary %}
+
+                    <div class="table-wrap">
+
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Preventable Disease</th>
+                                    <th>Economic Phase</th>
+                                    <th>Year</th>
+                                    <th>Total Cases</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for row in phase_summary %}
+                                    <tr>
+                                        <td>
+                                            <span class="table-badge violet-badge">
+                                                {{ row['infection_name'] }}
+                                            </span>
+                                        </td>
+
+                                        <td class="country-name">
+                                            {{ row['economic_phase'] }}
+                                        </td>
+
+                                        <td>{{ row['year'] }}</td>
+
+                                        <td>
+                                            <span class="metric-violet">
+                                                {{ "{:,.0f}".format(row['total_cases']) }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                    </div>
+
+
+                    <div class="interpretation-note">
+                        <span class="interpretation-icon">i</span>
+
+                        <p>
+                            This table joins every country's records across
+                            all four economic phases, regardless of the
+                            economic status selected above, so phases can
+                            be compared side by side.
+                        </p>
+                    </div>
+
+                {% else %}
+
+                    <div class="empty-state">
+                        <span class="empty-icon">◎</span>
+                        <h3>No summary available</h3>
+                        <p>
+                            Try selecting a different infection type or year.
+                        </p>
+                    </div>
+
+                {% endif %}
+
+            </section>
+
+        </div>
+
+    {% else %}
+
+        <section class="start-state">
+
+            <div class="start-orb">
+                <span></span>
+            </div>
+
+            <div>
+                <span class="start-kicker">READY TO EXPLORE</span>
+                <h2>Select an economic status, infection type and year</h2>
+                <p>
+                    Use the filters above to generate country-level results
+                    and an economic-phase summary directly from the
+                    immunisation database.
+                </p>
+            </div>
+
+        </section>
+
+    {% endif %}
+
+</main>
+
+{% endblock %}
