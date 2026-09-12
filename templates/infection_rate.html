@@ -1,0 +1,305 @@
+{% extends "base.html" %}
+
+{% block title %}Above-Average Infection Rate{% endblock %}
+
+{% block content %}
+
+<main class="page data-page improvement-page">
+
+    <section class="page-hero compact-hero rate-hero">
+
+        <div>
+            <div class="eyebrow">
+                <span class="eyebrow-dot"></span>
+                LEVEL 3B · DEEP-DIVE ANALYSIS
+            </div>
+
+            <h1>Above-Average Infection Rate</h1>
+
+            <p>
+                Find the global reported infection rate per 100,000 people
+                for a given year, and every country whose rate exceeds it.
+            </p>
+        </div>
+
+        <div class="hero-side-card rate-side-card">
+            <span class="side-card-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm6 9h-3.1a15.5 15.5 0 0 0-1.1-5A8 8 0 0 1 18 11ZM12 4c.8 1 1.5 3.1 1.8 7h-3.6c.3-3.9 1-6 1.8-7ZM4.1 13h3.1a15.5 15.5 0 0 0 1.1 5A8 8 0 0 1 4.1 13Zm0-2A8 8 0 0 1 8.3 6a15.5 15.5 0 0 0-1.1 5H4.1ZM12 20c-.8-1-1.5-3.1-1.8-7h3.6c-.3 3.9-1 6-1.8 7Zm1.8-2a15.5 15.5 0 0 0 1.1-5H18a8 8 0 0 1-4.2 5Z"/>
+                </svg>
+            </span>
+
+            <div>
+                <span>Benchmark</span>
+                <strong>Cases ÷ Population</strong>
+            </div>
+        </div>
+
+    </section>
+
+
+    <section class="filter-panel">
+
+        <div class="panel-heading">
+
+            <div>
+                <span class="panel-kicker">COMPARE TO THE GLOBAL RATE</span>
+                <h2>Configure the comparison</h2>
+                <p>
+                    Choose an infection type and a year, then pick how to
+                    sort the countries that exceed the global average.
+                </p>
+            </div>
+
+            <span class="filter-icon-large rate-filter-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                    <path d="M5 17.6 9.3 13l3 3L20 8.4V12h2V5h-7v2h3.6l-6.3 6.3-3-3L3.5 16 5 17.6Z"/>
+                </svg>
+            </span>
+
+        </div>
+
+
+        <form method="GET" class="filter-grid rate-filter-grid">
+
+            <div class="filter-group">
+                <label for="infection">Infection Type</label>
+
+                <select name="infection" id="infection" required>
+                    <option value="">Select infection type</option>
+
+                    {% for infection in infection_types %}
+                        <option
+                            value="{{ infection['id'] }}"
+                            {% if infection['id'] == selected_infection %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ infection['description'] }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+
+            <div class="filter-group">
+                <label for="year">Year</label>
+
+                <select name="year" id="year" required>
+                    <option value="">Select year</option>
+
+                    {% for year in years %}
+                        <option
+                            value="{{ year['year'] }}"
+                            {% if year['year']|string == selected_year %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ year['year'] }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+
+            <div class="filter-group">
+                <label for="sort">Sort Countries By</label>
+
+                <select name="sort" id="sort">
+                    <option value="rate_desc" {% if sort_option == 'rate_desc' %}selected{% endif %}>
+                        Highest rate first
+                    </option>
+
+                    <option value="rate_asc" {% if sort_option == 'rate_asc' %}selected{% endif %}>
+                        Lowest rate first
+                    </option>
+
+                    <option value="country" {% if sort_option == 'country' %}selected{% endif %}>
+                        Country name (A–Z)
+                    </option>
+                </select>
+            </div>
+
+
+            <div class="filter-actions">
+                <button type="submit" class="submit-button">
+                    <span>Compare</span>
+                    <span class="button-arrow">→</span>
+                </button>
+
+                <a class="reset-button" href="{{ url_for('infection_rate') }}">
+                    Reset
+                </a>
+            </div>
+
+        </form>
+
+    </section>
+
+
+    {% if selected_infection and selected_year %}
+
+        {% if global_rate is not none %}
+
+            <section class="result-card rate-results">
+
+                <div class="result-heading">
+
+                    <div class="result-icon rose-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 2 1 21h22L12 2Zm0 4 7.6 13H4.4L12 6Zm-1 4v4h2v-4h-2Zm0 5.5v2h2v-2h-2Z"/>
+                        </svg>
+                    </div>
+
+                    <div>
+                        <span class="result-kicker">RANKED RESULTS</span>
+                        <h2>Countries above the global {{ infection_name }} rate</h2>
+                        <p>Ranked using your chosen sort order.</p>
+                    </div>
+
+                    <span class="result-count">
+                        {{ global_rate }}
+                        <small>per 100k global</small>
+                    </span>
+
+                </div>
+
+
+                <div class="table-wrap">
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Country</th>
+                                <th>Infection Type</th>
+                                <th>Infection per 100,000 People</th>
+                                <th>Year</th>
+                                <th>Vs. Global Average</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr class="global-row">
+                                <td>
+                                    <span class="table-badge violet-badge">GLOBAL</span>
+                                </td>
+
+                                <td>{{ infection_name }}</td>
+
+                                <td>
+                                    <span class="metric-violet">{{ global_rate }}</span>
+                                </td>
+
+                                <td>{{ selected_year }}</td>
+
+                                <td>—</td>
+                            </tr>
+
+                            {% for row in above_average_countries %}
+                                <tr>
+                                    <td class="country-name">
+                                        {{ row['country_name'] }}
+                                    </td>
+
+                                    <td>{{ infection_name }}</td>
+
+                                    <td>
+                                        <span class="metric-alert">
+                                            {{ row['rate_per_100k'] }}
+                                        </span>
+                                    </td>
+
+                                    <td>{{ selected_year }}</td>
+
+                                    <td>
+                                        <span class="alert-pill">
+                                            <span class="alert-arrow">↑</span>
+                                            +{{ row['rate_above_global'] }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+
+
+                {% if not above_average_countries %}
+
+                    <div class="empty-state">
+                        <span class="empty-icon">◎</span>
+                        <h3>No country exceeds the global rate</h3>
+                        <p>
+                            Every country with valid data for this infection
+                            type and year is at or below the global average
+                            shown above.
+                        </p>
+                    </div>
+
+                {% endif %}
+
+
+                <div class="formula-card">
+
+                    <div class="formula-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M4 5h16v2H4V5Zm2 5h5v2H6v-2Zm0 5h5v2H6v-2Zm8-5h4v2h-4v-2Zm0 5h4v2h-4v-2Z"/>
+                        </svg>
+                    </div>
+
+                    <div>
+                        <span class="formula-kicker">CALCULATION METHOD</span>
+                        <h3>How the global rate is calculated</h3>
+
+                        <p>
+                            Global rate = total reported cases worldwide ÷
+                            total population worldwide × 100,000, using only
+                            countries with valid case and population data
+                            for the selected year.
+                        </p>
+                    </div>
+
+                </div>
+
+            </section>
+
+        {% else %}
+
+            <div class="empty-state">
+                <span class="empty-icon">◎</span>
+                <h3>No data available</h3>
+                <p>
+                    There is no valid case and population data for this
+                    infection type and year.
+                </p>
+            </div>
+
+        {% endif %}
+
+    {% else %}
+
+        <section class="start-state improvement-start-state">
+
+            <div class="start-orb">
+                <span></span>
+            </div>
+
+            <div>
+                <span class="start-kicker">DEEP-DIVE READY</span>
+                <h2>Choose an infection type and year</h2>
+
+                <p>
+                    The query calculates the global rate in SQL, compares
+                    every country against it in the same statement, and
+                    returns only the countries above average.
+                </p>
+            </div>
+
+        </section>
+
+    {% endif %}
+
+</main>
+
+{% endblock %}
