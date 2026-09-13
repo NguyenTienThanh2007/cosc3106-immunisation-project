@@ -459,9 +459,14 @@ def mission():
         SELECT
             PersonaID,
             persona_name,
+            age_gender,
             role,
-            description,
-            goals
+            location,
+            background,
+            needs,
+            goals,
+            skills,
+            pain_points
         FROM Persona
         ORDER BY PersonaID
     """).fetchall()
@@ -488,7 +493,8 @@ def mission():
 # LEVEL 2B - INFECTION EXPLORER
 # =========================
 
-# Whitelist of columns that Table 1 may be sorted by, so the user-selected sort criterion can never be used to inject SQL.
+# Whitelist of columns that Table 1 may be sorted by, so the
+# user-selected sort criterion can never be used to inject SQL.
 INFECTION_SORT_COLUMNS = {
     "country": "country_name",
     "rate": "cases_per_100k"
@@ -512,7 +518,8 @@ def infections():
     if sort_dir not in ("asc", "desc"):
         sort_dir = "desc"
 
-    # The link a user clicks next on each header - toggles the direction if that column is already active, otherwise starts fresh.
+    # The link a user clicks next on each header - toggles the
+    # direction if that column is already active, otherwise starts fresh.
     country_sort_next = "desc" if (sort_by == "country" and sort_dir == "asc") else "asc"
     rate_sort_next = "asc" if (sort_by == "rate" and sort_dir == "desc") else "desc"
 
@@ -573,7 +580,8 @@ def infections():
             [selected_infection, selected_year, selected_economy]
         ).fetchone()["total"]
 
-        # Table 1: country-level infection rate for the selected economic status, infection type and year.
+        # Table 1: country-level infection rate for the selected
+        # economic status, infection type and year.
         order_column = INFECTION_SORT_COLUMNS[sort_by]
         order_clause = f"{order_column} {sort_dir.upper()}"
 
@@ -620,7 +628,8 @@ def infections():
         ).fetchall()
 
         # Table 2: combines Country + Economy + InfectionData to total
-        # cases for every economic phase (not just the one selected above), so the user can see the full picture in one place.
+        # cases for every economic phase (not just the one selected
+        # above), so the user can see the full picture in one place.
         phase_query = """
             SELECT
                 Infection_Type.description AS infection_name,
@@ -681,7 +690,8 @@ def infections():
 # LEVEL 3B - ABOVE-AVERAGE INFECTION RATE
 # =========================
 
-# Whitelist of sort options for the ranked country list, so the user-selected sort criterion can never be used to inject SQL.
+# Whitelist of sort options for the ranked country list, so the
+# user-selected sort criterion can never be used to inject SQL.
 INFECTION_RATE_SORT = {
     "rate_desc": "rate_per_100k DESC",
     "rate_asc": "rate_per_100k ASC",
@@ -728,7 +738,8 @@ def infection_rate():
 
         infection_name = infection_row["description"] if infection_row else selected_infection
 
-        # Global reported infection rate per 100,000 people, worldwide, for the selected infection type and year.
+        # Global reported infection rate per 100,000 people, worldwide,
+        # for the selected infection type and year.
         global_query = """
             SELECT
                 ROUND(
@@ -761,7 +772,9 @@ def infection_rate():
             order_clause = INFECTION_RATE_SORT[sort_option]
 
             # A single query: the "global_stats" CTE calculates the
-            # worldwide rate once, then every country's rate is compared against it in the same JOIN - no Python post-processing needed.
+            # worldwide rate once, then every country's rate is
+            # compared against it in the same JOIN - no Python
+            # post-processing needed.
             rate_query = f"""
                 WITH global_stats AS (
                     SELECT
