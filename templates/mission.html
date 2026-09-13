@@ -128,12 +128,56 @@
 
                         <span class="persona-role">{{ persona['role'] }}</span>
                         <h3>{{ persona['persona_name'] }}</h3>
-                        <p>{{ persona['description'] }}</p>
+
+                        {% if persona['age_gender'] or persona['location'] %}
+                            <p class="persona-meta">
+                                {{ persona['age_gender'] }}{% if persona['age_gender'] and persona['location'] %} · {% endif %}{{ persona['location'] }}
+                            </p>
+                        {% endif %}
+
+                        <p>{{ persona['background'] }}</p>
+
+                        {% if persona['needs'] %}
+                            <div class="persona-goal">
+                                <strong>Needs</strong>
+                                <ul class="content-list persona-list">
+                                    {% for need in persona['needs'].split('|') %}
+                                        <li>{{ need }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
 
                         <div class="persona-goal">
-                            <strong>Primary goal</strong>
-                            {{ persona['goals'] }}
+                            <strong>Goals</strong>
+                            <ul class="content-list persona-list">
+                                {% for goal in persona['goals'].split('|') %}
+                                    <li>{{ goal }}</li>
+                                {% endfor %}
+                            </ul>
                         </div>
+
+                        {% if persona['skills'] %}
+                            <div class="persona-goal">
+                                <strong>Skills &amp; Experience</strong>
+                                <ul class="content-list persona-list">
+                                    {% for skill in persona['skills'].split('|') %}
+                                        <li>{{ skill }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+
+                        {% if persona['pain_points'] %}
+                            <div class="persona-goal">
+                                <strong>Pain Points</strong>
+                                <ul class="content-list persona-list">
+                                    {% for pain in persona['pain_points'].split('|') %}
+                                        <li>{{ pain }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
                     </article>
                 {% endfor %}
             </div>
