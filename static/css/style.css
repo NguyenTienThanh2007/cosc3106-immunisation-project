@@ -72,11 +72,9 @@ body {
         sans-serif;
 
     background:
-        radial-gradient(circle at 9% 6%, rgba(86, 151, 255, .23), transparent 24%),
-        radial-gradient(circle at 88% 8%, rgba(158, 105, 255, .19), transparent 27%),
-        radial-gradient(circle at 83% 77%, rgba(27, 202, 187, .17), transparent 29%),
-        radial-gradient(circle at 15% 83%, rgba(235, 122, 180, .08), transparent 24%),
-        linear-gradient(135deg, #edf4ff 0%, #f8f4ff 47%, #effcf9 100%);
+        radial-gradient(circle at 9% 6%, rgba(86, 151, 255, .06), transparent 26%),
+        radial-gradient(circle at 88% 8%, rgba(120, 130, 245, .05), transparent 28%),
+        linear-gradient(135deg, #f8fafd 0%, #f9f8fb 50%, #f8fbfa 100%);
 
     background-attachment: fixed;
 }
@@ -122,13 +120,10 @@ svg {
     left: -145px;
     top: -145px;
 
-    opacity: .46;
+    opacity: .09;
 
     background:
-        linear-gradient(135deg, #79adff, #a58aff);
-
-    animation:
-        ambientOne 17s ease-in-out infinite alternate;
+        linear-gradient(135deg, #79adff, #a5a0e0);
 }
 
 .ambient-two {
@@ -138,13 +133,10 @@ svg {
     right: -180px;
     bottom: -185px;
 
-    opacity: .42;
+    opacity: .08;
 
     background:
-        linear-gradient(135deg, #92e8db, #ac9df8);
-
-    animation:
-        ambientTwo 20s ease-in-out infinite alternate;
+        linear-gradient(135deg, #9fd6cd, #a7a0e0);
 }
 
 .ambient-three {
@@ -154,57 +146,11 @@ svg {
     left: 44%;
     top: 42%;
 
-    opacity: .17;
+    opacity: .04;
 
     background:
-        linear-gradient(135deg, #8db6ff, #e3a3e8);
-
-    animation:
-        ambientThree 22s ease-in-out infinite alternate;
+        linear-gradient(135deg, #8db6ff, #c9a8d0);
 }
-
-@keyframes ambientOne {
-    from {
-        transform:
-            translate3d(0, 0, 0)
-            scale(1);
-    }
-
-    to {
-        transform:
-            translate3d(110px, 110px, 0)
-            scale(1.11);
-    }
-}
-
-@keyframes ambientTwo {
-    from {
-        transform:
-            translate3d(0, 0, 0)
-            scale(1);
-    }
-
-    to {
-        transform:
-            translate3d(-115px, -95px, 0)
-            scale(1.13);
-    }
-}
-
-@keyframes ambientThree {
-    from {
-        transform:
-            translate3d(-20px, -20px, 0)
-            scale(.9);
-    }
-
-    to {
-        transform:
-            translate3d(50px, 65px, 0)
-            scale(1.17);
-    }
-}
-
 
 /* ============================================================
    NAVBAR
@@ -279,9 +225,8 @@ svg {
     background:
         linear-gradient(
             135deg,
-            #315ae2,
-            #664ae6 62%,
-            #0aa0bd
+            #3a5fc7,
+            #4a5bc4
         );
 
     box-shadow:
@@ -577,32 +522,13 @@ p {
     background:
         radial-gradient(
             circle at 34% 29%,
-            rgba(255, 255, 255, .98) 0 7%,
-            rgba(123, 201, 255, .60) 21%,
-            rgba(96, 91, 235, .34) 48%,
-            rgba(172, 105, 244, .17) 65%,
+            rgba(255, 255, 255, .9) 0 7%,
+            rgba(123, 201, 255, .07) 21%,
+            rgba(96, 91, 235, .04) 48%,
             transparent 69%
         );
 
     filter: blur(2px);
-
-    animation:
-        heroOrb 8s ease-in-out infinite;
-}
-
-@keyframes heroOrb {
-    0%,
-    100% {
-        transform:
-            translate3d(0, 0, 0)
-            scale(1);
-    }
-
-    50% {
-        transform:
-            translate3d(-18px, 22px, 0)
-            scale(1.07);
-    }
 }
 
 .hero-copy {
@@ -630,9 +556,7 @@ p {
         linear-gradient(
             105deg,
             #3157e5,
-            #604fe4 50%,
-            #8d3ce2 77%,
-            #0d89b1
+            #4650c8
         );
 
     -webkit-background-clip: text;
@@ -712,9 +636,8 @@ p {
     background:
         linear-gradient(
             110deg,
-            #315ae5 0%,
-            #574ce1 56%,
-            #8242e6 100%
+            #3a5fc7 0%,
+            #4a55c0 100%
         );
 
     box-shadow:
@@ -957,7 +880,7 @@ p {
     background:
         radial-gradient(
             circle,
-            rgba(102, 91, 235, .19),
+            rgba(102, 91, 235, .08),
             transparent 68%
         );
 }
@@ -1606,7 +1529,7 @@ p {
     background:
         radial-gradient(
             circle,
-            rgba(77, 115, 235, .14),
+            rgba(77, 115, 235, .06),
             transparent 68%
         );
 }
@@ -1615,7 +1538,7 @@ p {
     background:
         radial-gradient(
             circle,
-            rgba(115, 78, 226, .14),
+            rgba(115, 78, 226, .06),
             transparent 68%
         );
 }
@@ -1624,7 +1547,7 @@ p {
     background:
         radial-gradient(
             circle,
-            rgba(14, 151, 178, .13),
+            rgba(14, 151, 178, .05),
             transparent 68%
         );
 }
@@ -1633,7 +1556,7 @@ p {
     background:
         radial-gradient(
             circle,
-            rgba(20, 145, 106, .13),
+            rgba(20, 145, 106, .05),
             transparent 68%
         );
 }
@@ -1885,7 +1808,7 @@ p {
     background:
         radial-gradient(
             circle,
-            rgba(81, 107, 230, .15),
+            rgba(81, 107, 230, .05),
             transparent 69%
         );
 }
@@ -1894,7 +1817,7 @@ p {
     background:
         radial-gradient(
             circle,
-            rgba(119, 77, 228, .15),
+            rgba(81, 107, 230, .05),
             transparent 69%
         );
 }
@@ -1916,18 +1839,7 @@ p {
 }
 
 .improvement-hero h1 {
-    background:
-        linear-gradient(
-            105deg,
-            #3156d3,
-            #7149de 55%,
-            #9b45c6
-        );
-
-    -webkit-background-clip: text;
-    background-clip: text;
-
-    color: transparent;
+    color: #1c376e;
 }
 
 .page-hero p {
@@ -2229,9 +2141,8 @@ select:focus {
     background:
         linear-gradient(
             110deg,
-            #315be3,
-            #574ce0 55%,
-            #7b45e5
+            #3a5fc7,
+            #4a55c0
         );
 
     box-shadow:
@@ -3022,22 +2933,12 @@ tbody tr:last-child td {
 
     border:
         2px solid
-        rgba(71, 90, 197, .20);
+        rgba(71, 90, 197, .18);
 
     border-top-color:
         #5864d9;
 
     border-radius: 50%;
-
-    animation:
-        startSpin 4s linear infinite;
-}
-
-@keyframes startSpin {
-    to {
-        transform:
-            rotate(360deg);
-    }
 }
 
 .start-state h2 {
@@ -3747,69 +3648,39 @@ tbody tr:last-child td {
     background:
         radial-gradient(
             circle,
-            rgba(18, 149, 107, .15),
+            rgba(81, 107, 230, .05),
             transparent 69%
         );
 }
 
 .mission-hero h1 {
-    background:
-        linear-gradient(
-            105deg,
-            #315be8,
-            #12956b 80%
-        );
-
-    -webkit-background-clip: text;
-    background-clip: text;
-
-    color: transparent;
+    color: #1c376e;
 }
 
 .infections-hero::after {
     background:
         radial-gradient(
             circle,
-            rgba(10, 159, 190, .15),
+            rgba(81, 107, 230, .05),
             transparent 69%
         );
 }
 
 .infections-hero h1 {
-    background:
-        linear-gradient(
-            105deg,
-            #0a9fbe,
-            #315be8 80%
-        );
-
-    -webkit-background-clip: text;
-    background-clip: text;
-
-    color: transparent;
+    color: #1c376e;
 }
 
 .rate-hero::after {
     background:
         radial-gradient(
             circle,
-            rgba(217, 95, 150, .16),
+            rgba(81, 107, 230, .05),
             transparent 69%
         );
 }
 
 .rate-hero h1 {
-    background:
-        linear-gradient(
-            105deg,
-            #d95f96,
-            #d38b2f 85%
-        );
-
-    -webkit-background-clip: text;
-    background-clip: text;
-
-    color: transparent;
+    color: #1c376e;
 }
 
 .infections-side-card .side-card-icon,
@@ -3996,6 +3867,8 @@ tbody tr:last-child td {
     grid-template-columns:
         repeat(3, minmax(0, 1fr));
 
+    align-items: start;
+
     gap: 16px;
 
     margin-top: 4px;
@@ -4137,6 +4010,35 @@ tbody tr:last-child td {
     letter-spacing: .06em;
 
     text-transform: uppercase;
+}
+
+.persona-meta {
+    margin: -6px 0 10px;
+
+    color: #8791a6;
+
+    font-size: .68rem;
+    font-weight: 650;
+}
+
+.persona-list {
+    gap: 5px;
+
+    margin: 8px 0 0;
+}
+
+.persona-list li {
+    padding-left: 15px;
+
+    font-size: .71rem;
+    line-height: 1.5;
+}
+
+.persona-list li::before {
+    width: 5px;
+    height: 5px;
+
+    top: 6px;
 }
 
 
