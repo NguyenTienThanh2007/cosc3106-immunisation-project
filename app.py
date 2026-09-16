@@ -832,6 +832,20 @@ def infection_rate():
                         / CountryPopulation.population * 100000
                       ) > global_stats.global_rate
 
+                  -- Only surface a country here if this site can also show
+                  -- its vaccination coverage, so a viewer who spots a high
+                  -- infection rate always has somewhere to cross-reference
+                  -- it against (the Vaccination Explorer). A correlated
+                  -- EXISTS subquery, not a JOIN, because we only need a
+                  -- yes/no check - pulling in Vaccination's columns would
+                  -- multiply rows for countries with several matching
+                  -- records and would require an extra DISTINCT.
+                  AND EXISTS (
+                        SELECT 1
+                        FROM Vaccination
+                        WHERE Vaccination.country = InfectionData.country
+                      )
+
                 ORDER BY {order_clause}
             """
 
